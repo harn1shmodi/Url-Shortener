@@ -2,8 +2,16 @@ const express = require("express")
 const app = express()
 const ShortUrl = require("./models/shortUrl")
 const mongoose = require("mongoose")
+const rateLimit = require("express-rate-limit") // New dependency
 
-mongoose.connect("mongodb+srv://harnish:harnish123@clusterurl.l9jfq.mongodb.net/UrlShortner?retryWrites=true&w=majority", {useNewUrlParser : true, useUnifiedTopology : true})
+mongoose.connect("mongodb+srv://harnish:harnish123@clusterurl.l9jfqtest.mongodb.net/UrlShortner?retryWrites=true&w=majority", {useNewUrlParser : true, useUnifiedTopology : true})
+
+// Rate limiting middleware
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100 // limit each IP to 100 requests per windowMs
+})
+app.use(limiter)
 
 app.set("view engine","ejs")
 app.use(express.urlencoded({extended : false}))
